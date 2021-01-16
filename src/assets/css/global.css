@@ -1,7 +1,24 @@
 body,
 html,
-#app{
-height: 100%;
-margin: 0;
-padding: 0;
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  min-width: 1180;
+}
+.el-card {
+  margin-top: 20px;
+  min-height: 620px;
+}
+.el-table {
+  margin-top: 20px;
+}
+.el-tag {
+  margin: 0 10px 0 0;
+}
+.el-checkbox {
+  margin: 0 10px 0 0 !important;
+}
+.ql-editor {
+  min-height: 300px;
 }

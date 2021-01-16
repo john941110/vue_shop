@@ -17,36 +17,18 @@
         <!-- 绑定toggleCollapse事件，切换isCollapse的布尔值。 -->
         <div class="toggle-button" @click="toggleCollapse">|||</div>
         <!--  default-active，当前激活菜单的index，index值必须为string。 unique-opened保持一个子菜单的展开， router开启路由模式，会以index的值为path进行页面跳转， collapse水平折叠收起菜单，因为要点击切换，所以值为isCollapse变量，默认为false。 collapse-transition关闭折叠动画-->
-        <el-menu
-          :default-active="activePath"
-          background-color="#333744"
-          text-color="#fff"
-          active-text-color="#409EFF"
-          unique-opened
-          router
-          :collapse="isCollapse"
-          :collapse-transition="false"
-        >
-        <!-- 一级导航栏 -->
-          <el-submenu
-            :index="item.id + ''"
-            v-for="item in asidelist"
-            :key="item.id"
-          >
+        <el-menu :default-active="activePath" background-color="#333744" text-color="#fff" active-text-color="#409EFF" unique-opened router :collapse="isCollapse" :collapse-transition="false">
+          <!-- 一级导航栏 -->
+          <el-submenu :index="item.id + ''" v-for="item in asidelist" :key="item.id">
             <template slot="title">
               <!-- 字体图标是通过设置变量，附加的一个类名 -->
               <i :class="iconsObj[item.id]"></i>
               <span v-text="item.authName"></span>
             </template>
             <!-- 二级导航栏 ，通过返回数据中的children属性遍历循环得到，因为二级导航是需要被点击跳转的，所以：index设置为真正要跳转到的端口地址。然后绑定点击事件，执行saveNavState函数，这样default-active的值就会变成真正的端口，就会得以真正的跳转-->
-            <el-menu-item
-              v-for="item_s in item.children"
-              :key="item_s.id"
-              :index="'/' + item_s.path"
-              @click="saveNavState('/' + item_s.path)"
-            >
+            <el-menu-item v-for="item_s in item.children" :key="item_s.id" :index="'/' + item_s.path" @click="saveNavState('/' + item_s.path)">
               <template slot="title">
-                <i class="el-icon-s-tools "></i>
+                <i class="el-icon-document "></i>
                 <span v-text="item_s.authName"></span>
               </template>
             </el-menu-item>

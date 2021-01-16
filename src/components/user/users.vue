@@ -15,25 +15,14 @@
         <el-col :span="8"
           ><div>
             <!-- 给搜索框双向绑定数据 设置清空属性  绑定@clear事件，执行获取用户数据，恢复用户数据 -->
-            <el-input
-              placeholder="请输入内容"
-              v-model="queryInfo.query"
-              clearable
-              @clear="getusers"
-            >
+            <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getusers">
               <!-- 给搜索按钮绑定点击事件，会自动获取input框中绑定的数据，保存执行获取相应数据的用户 -->
-              <el-button
-                slot="append"
-                icon="el-icon-search"
-                @click="getusers"
-              ></el-button>
+              <el-button slot="append" icon="el-icon-search" @click="getusers"></el-button>
             </el-input></div
         ></el-col>
         <el-col :span="4"
           ><div>
-            <el-button type="primary" @click="addDialogVisible = true"
-              >添加用户</el-button
-            >
+            <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
           </div></el-col
         >
       </el-row>
@@ -53,44 +42,19 @@
             <!-- 设置slot-scope="scope" 可以通过scope.row获取这一行的数据-->
             <!-- v-model="scope.row.mg_state" 双向绑定了这一行的状态 ,switch 状态发生变化时执行change事件，同时scope.row.mg_state会发生改变。 然后将这一行数据传递过去，进行ajax请求修改数据-->
             <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.mg_state"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-                @change="userStateChanged(scope.row)"
-              >
-              </el-switch>
+              <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949" @change="userStateChanged(scope.row)"> </el-switch>
             </template>
           </el-table-column>
           <!-- 操作栏 -->
           <el-table-column label="操作" width="180px">
             <template slot-scope="scope">
               <!-- 修改按钮 -->
-              <el-button
-                type="primary"
-                icon="el-icon-edit"
-                size="mini"
-                @click="editusershow(scope.row.id)"
-              ></el-button>
+              <el-button type="primary" icon="el-icon-edit" size="mini" @click="editusershow(scope.row.id)"></el-button>
               <!-- 删除按钮 -->
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-                @click="delusershow(scope.row.id)"
-              ></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini" @click="delusershow(scope.row.id)"></el-button>
               <!-- 分配角色按钮 ，选中会有弹出信息提示-->
-              <el-tooltip
-                effect="dark"
-                content="分配角色"
-                placement="top"
-                :enterable="false"
-              >
-                <el-button
-                  type="warning"
-                  icon="el-icon-setting"
-                  size="mini"
-                ></el-button>
+              <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+                <el-button type="warning" icon="el-icon-setting" size="mini" @click="roleusershow(scope.row)"></el-button>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -109,19 +73,9 @@
       </el-pagination>
       <!-- 添加用户区域 -->
       <!-- :visible.sync="布尔值"   布尔值为false时，弹窗关闭。值为true时，弹窗弹出。调用关闭弹窗事件，关闭弹窗重置表单-->
-      <el-dialog
-        title="添加用户"
-        :visible.sync="addDialogVisible"
-        width="50%"
-        @close="addDialogClosed"
-      >
+      <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
         <!-- 添加用户表单区域 ,ref是为了获取整个表单这个元素或组件,rules是验证规则的属性,model储存的是是整个表单的数据-->
-        <el-form
-          :model="addruleForm"
-          :rules="addrules"
-          ref="refaddForm"
-          label-width="70px"
-        >
+        <el-form :model="addruleForm" :rules="addrules" ref="refaddForm" label-width="70px">
           <!-- prop是验证规则的名称  -->
           <el-form-item label="用户名" prop="username">
             <el-input v-model="addruleForm.username"></el-input>
@@ -144,19 +98,9 @@
         </span>
       </el-dialog>
       <!-- 编辑用户区域 -->
-      <el-dialog
-        title="编辑用户"
-        :visible.sync="editDialogVisible"
-        width="50%"
-        @close="editDialogClosed"
-      >
+      <el-dialog title="编辑用户" :visible.sync="editDialogVisible" width="50%" @close="editDialogClosed">
         <!-- 表单区域 -->
-        <el-form
-          :model="editruleForm"
-          :rules="addrules"
-          ref="refeditForm"
-          label-width="70px"
-        >
+        <el-form :model="editruleForm" :rules="addrules" ref="refeditForm" label-width="70px">
           <el-form-item label="用户名">
             <el-input v-model="editruleForm.username" disabled></el-input>
           </el-form-item>
@@ -172,6 +116,33 @@
           <el-button @click="editDialogVisible = false">取 消</el-button>
           <!-- 点击确定，执行编辑用户函数 -->
           <el-button type="primary" @click="edituser">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- 分配角色区域 -->
+      <el-dialog title="分配角色" :visible.sync="rolesDialogVisible" width="50%" @close="roleDialogClosed">
+        <!-- 内容区域 -->
+        <p>
+          <span>当前的用户:</span>
+          <!-- rolesinfo就是所选择的这一行的所有数据集合  -->
+          <span v-text="rolesinfo.username"></span>
+        </p>
+        <p>
+          <span>当前的角色:</span>
+          <span v-text="rolesinfo.role_name"></span>
+        </p>
+        <p>
+          <span>分配新角色:</span>
+          <span>
+            <!-- 双向数据绑定rolesid变量，选到哪个角色，rolesid就是相应角色的id值，然后通过分配角色接口，把这个rolesid值传给后台。 -->
+            <el-select v-model="rolesid" placeholder="请选择">
+              <el-option v-for="item in roleslist" :key="item.id" :label="item.roleName" :value="item.id"> </el-option>
+            </el-select>
+          </span>
+        </p>
+        <!-- 按钮区域 -->
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="rolesDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="roleuser">确 定</el-button>
         </span>
       </el-dialog>
     </el-card>
@@ -241,7 +212,15 @@ export default {
           { required: true, message: '请输入电话', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' }
         ]
-      }
+      },
+      // 分配角色弹窗是否显示，用rolesDialogVisible变量来控制，默认不显示，值为false。
+      rolesDialogVisible: false,
+      // 设置rolesinfo，保存选中这一行的数据，以便在页面显示
+      rolesinfo: {},
+      // 设置roleslist，保存从角色列表接口获取到的数据，以便在el-select中使用
+      roleslist: [],
+      // 设置rolesid，用来保存选中角色的id
+      rolesid: ''
     }
   },
   created() {
@@ -272,9 +251,7 @@ export default {
     },
     // 监测开关状态，改变后台的状态值，如果调用接口失败，就把值改为取反值。如果调用接口成功，就把传递过来的mg_state值赋值给mg_state
     async userStateChanged(userinfo) {
-      const { data: res } = await this.axios.put(
-        `users/${userinfo.id}/state/${userinfo.mg_state}`
-      )
+      const { data: res } = await this.axios.put(`users/${userinfo.id}/state/${userinfo.mg_state}`)
       if (res.meta.status !== 200) {
         // 如果调用接口失败，就把值改为取反值
         userinfo.mg_state = !userinfo.mg_state
@@ -317,13 +294,10 @@ export default {
     edituser() {
       this.$refs.refeditForm.validate(async check => {
         if (!check) return
-        const { data: res } = await this.axios.put(
-          'users/' + this.editruleForm.id,
-          {
-            email: this.editruleForm.email,
-            mobile: this.editruleForm.mobile
-          }
-        )
+        const { data: res } = await this.axios.put('users/' + this.editruleForm.id, {
+          email: this.editruleForm.email,
+          mobile: this.editruleForm.mobile
+        })
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.msg)
         }
@@ -332,6 +306,7 @@ export default {
         this.editDialogVisible = false
       })
     },
+    // 点击删除按钮，调用$confirm会弹出提示框，返回值是一个promise，点击取消执行.catch的函数。点击确认，执行.then里的函数
     delusershow(id) {
       this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -339,6 +314,7 @@ export default {
         type: 'warning'
       })
         .then(async () => {
+          // 点击确认按钮，调用根据id删除用户的接口。删除成功后从新获取数据，刷新页面
           const { data: res } = await this.axios.delete(`users/${id}`)
           if (res.meta.status !== 200) {
             return this.$message.error(res.meta.msg)
@@ -355,16 +331,40 @@ export default {
             message: '已取消删除'
           })
         })
+    },
+    // 点击分配角色按钮，将这一行数据赋值给变量rolesinfo，这样就可以在页面中显示。然后调用获取所有角色的接口，赋值给roleslist，以便选择框里有所有角色的选项。然后打开弹窗
+    async roleusershow(item) {
+      this.rolesinfo = item
+      const { data: res } = await this.axios.get('roles')
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      this.roleslist = res.data
+      this.rolesDialogVisible = true
+    },
+    // 点击确定，调用分配角色接口。rolesinfo.id是该角色的id，rolesid是选项框所选择的角色id。调用接口成功后，从新获取用户列表，关闭弹窗。
+    async roleuser() {
+      const { data: res } = await this.axios.put(`users/${this.rolesinfo.id}/role`, {
+        rid: this.rolesid
+      })
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      this.$message.success(res.meta.msg)
+      this.getusers()
+      this.rolesDialogVisible = false
+    },
+    // 关闭弹窗，清空rolesid，rolesinfo这两个变量。以防下次打开按钮，选项框还是之前的值。
+    roleDialogClosed() {
+      this.rolesid = ''
+      this.rolesinfo = {}
     }
   }
 }
 </script>
 
 <style scoped>
-.el-card {
-  margin-top: 20px;
-}
-.el-table {
-  margin-top: 20px;
+span {
+  margin-left: 20px;
 }
 </style>

@@ -13,17 +13,10 @@
         <!-- 通过 prop="username"  绑定验证的规则 -->
         <el-form-item prop="username">
           <!-- v-model双向数据绑定 ， prefix-icon 给 input 前后添加字体图标-->
-          <el-input
-            prefix-icon="iconfont icon-user"
-            v-model="form.username"
-          ></el-input>
+          <el-input prefix-icon="iconfont icon-user" v-model="form.username"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input
-            prefix-icon="iconfont icon-3702mima"
-            v-model="form.password"
-            type="password"
-          ></el-input>
+          <el-input prefix-icon="iconfont icon-3702mima" v-model="form.password" type="password"></el-input>
         </el-form-item>
         <el-form-item class="btns">
           <el-button type="primary" @click="login">登录</el-button>
